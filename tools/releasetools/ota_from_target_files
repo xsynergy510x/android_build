@@ -511,6 +511,19 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
 
   device_specific.FullOTA_InstallBegin()
 
+  script.Print("Installing...                           ");
+  script.Print("                                        ");
+  script.Print("      ,cmcmc,     CMCm       mCMC");
+  script.Print("    .cMCMCMCMc    MCMcm     m MCM       ");
+  script.Print("   ,CM       ``   CMC cm   m  CMC       ");
+  script.Print("   MCM            MCM  cm m   MCM       ");
+  script.Print("   `CM       ,,   CMC   cm    CMC       ");
+  script.Print("    `CMCMCMCM,    MCM         MCM       ");
+  script.Print("      `CMCM'      CMC         CMC       ");
+  script.Print("      Optimized by xSynergy510x...      ");
+  script.Print("");
+  script.Print("Checking file /system type...");
+
   if OPTIONS.backuptool:
     script.Mount("/system")
     script.RunBackup("backup")
@@ -528,8 +541,7 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
-  script.FormatPartition("/system")
-  script.Mount("/system")
+  script.FormatAndMountPartition("/system")
   if not OPTIONS.no_separate_recovery:
     script.UnpackPackageDir("recovery", "/system")
   script.UnpackPackageDir("system", "/system")
