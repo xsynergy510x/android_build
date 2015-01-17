@@ -581,6 +581,18 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.SetPermissionsRecursive("/tmp/install", 0, 0, 0755, 0644, None, None)
   script.SetPermissionsRecursive("/tmp/install/bin", 0, 0, 0755, 0755, None, None)
 
+  script.Print("Installing...                           ");
+  script.Print("                                        ");
+  script.Print("      ,cmcmc,     CMCm       mCMC  12.1 ");
+  script.Print("    .cMCMCMCMc    MCMcm     m MCM       ");
+  script.Print("   ,CM       ``   CMC cm   m  CMC       ");
+  script.Print("   MCM            MCM  cm m   MCM       ");
+  script.Print("   `CM       ,,   CMC   cm    CMC       ");
+  script.Print("    `CMCMCMCM,    MCM         MCM       ");
+  script.Print("      `CMCM'      CMC         CMC       ");
+  script.Print("      Optimized by xSynergy510x...      ");
+  script.Print("");
+
   if OPTIONS.backuptool:
     script.Mount("/system")
     script.RunBackup("backup")
@@ -619,11 +631,14 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     system_diff = common.BlockDifference("system", system_tgt, src=None)
     system_diff.WriteScript(script, output_zip)
   else:
+    script.Print("Formatting /system...")
     script.FormatPartition("/system")
+    script.Print("Unpacking /system files...")
     script.Mount("/system", recovery_mount_options)
     if not has_recovery_patch:
       script.UnpackPackageDir("recovery", "/system")
     script.UnpackPackageDir("system", "/system")
+    script.Print("Settings symlinks...")
     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
     script.MakeSymlinks(symlinks)
 
@@ -674,10 +689,12 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     if block_based:
       script.Unmount("/system")
 
+  script.Print("Installing boot.img...")
   script.ShowProgress(0.05, 5)
   script.WriteRawImage("/boot", "boot.img")
 
   script.ShowProgress(0.2, 10)
+  script.Print("SaberMod CM12 complete!")
   device_specific.FullOTA_InstallEnd()
 
   if OPTIONS.extra_script is not None:
