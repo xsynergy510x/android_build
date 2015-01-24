@@ -45,5 +45,26 @@ endif
 endif
 endif
 
+# arm64 doesn't like cortex-a15 in the kernel
+ifeq (denver,$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT))
+	# Export cflags and cpu variant to the kernel.
+	export kernel_arch_variant_cflags := -march=armv8-a
+endif
+
 arch_variant_cflags += \
     -mfloat-abi=softfp
+
+# For neon vfpv4 type, override -mfpu=neon with -mfpu=neon-vfpv4
+# Have the clang compiler ignore unknow flag option -mfpu=neon-vfpv4
+# Once ignored by clang, clang will default back to -mfpu=neon
+neon_vfpv4_type := \
+	cortex-a15 \
+	krait
+
+ifneq ($(filter $(neon_vfpv4_type),$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),)
+arch_variant_cflags += \
+    -mfpu=neon-vfpv4
+# Export cflags and cpu variant to the kernel.
+export kernel_arch_variant_cflags := $(arch_variant_cflags)
+endif
+

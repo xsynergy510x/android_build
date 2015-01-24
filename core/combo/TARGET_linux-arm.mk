@@ -34,13 +34,43 @@ ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)ARCH_VARIANT)),)
 TARGET_$(combo_2nd_arch_prefix)ARCH_VARIANT := armv5te
 endif
 
-# Decouple NDK library selection with platform compiler version
-$(combo_2nd_arch_prefix)TARGET_NDK_GCC_VERSION := 4.8
-
+# Decouple android compiler version from kernel compiler version
+ifeq ($(strip $(TARGET_SM_AND)),)
 ifeq ($(strip $(TARGET_GCC_VERSION_EXP)),)
-$(combo_2nd_arch_prefix)TARGET_GCC_VERSION := 4.8
+$(combo_2nd_arch_prefix)TARGET_AND_GCC_VERSION := 4.8
 else
-$(combo_2nd_arch_prefix)TARGET_GCC_VERSION := $(TARGET_GCC_VERSION_EXP)
+$(combo_2nd_arch_prefix)TARGET_AND_GCC_VERSION := $(TARGET_GCC_VERSION_EXP)
+endif
+else
+$(combo_2nd_arch_prefix)TARGET_AND_GCC_VERSION := $(TARGET_SM_AND)
+endif
+
+# Decouple kernel compiler version from android compiler version
+ifeq ($(strip $(TARGET_SM_KERNEL)),)
+$(combo_2nd_arch_prefix)TARGET_KERNEL_GCC_VERSION := $($(combo_2nd_arch_prefix)TARGET_AND_GCC_VERSION)
+else
+$(combo_2nd_arch_prefix)TARGET_KERNEL_GCC_VERSION := $(TARGET_SM_KERNEL)
+endif
+
+# Allow overriding of NDK library selection
+ifeq ($(strip $(TARGET_NDK_VERSION)),)
+ifeq ($(strip $(TARGET_SM_AND)),)
+$(combo_2nd_arch_prefix)TARGET_NDK_GCC_VERSION := 4.8
+else
+$(combo_2nd_arch_prefix)TARGET_NDK_GCC_VERSION := $(TARGET_SM_AND)
+endif
+else
+$(combo_2nd_arch_prefix)TARGET_NDK_GCC_VERSION := $(TARGET_NDK_VERSION)
+endif
+
+# Allow a second arch combo to override the ROM toolchain version
+ifdef 2ND_TARGET_SM_AND_VERSION
+$(combo_2nd_arch_prefix)TARGET_AND_GCC_VERSION := $(2ND_TARGET_SM_AND)
+endif
+
+# Allow a second arch combo to override the NDK library selection
+ifdef 2ND_TARGET_NDK_VERSION
+$(combo_2nd_arch_prefix)TARGET_NDK_GCC_VERSION := $(2ND_TARGET_NDK_VERSION)
 endif
 
 TARGET_ARCH_SPECIFIC_MAKEFILE := $(BUILD_COMBOS)/arch/$(TARGET_$(combo_2nd_arch_prefix)ARCH)/$(TARGET_$(combo_2nd_arch_prefix)ARCH_VARIANT).mk
@@ -52,11 +82,13 @@ include $(TARGET_ARCH_SPECIFIC_MAKEFILE)
 include $(BUILD_SYSTEM)/combo/fdo.mk
 
 # You can set TARGET_TOOLS_PREFIX to get gcc from somewhere else
-ifeq ($(strip $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)),)
-$(combo_2nd_arch_prefix)TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$($(combo_2nd_arch_prefix)TARGET_GCC_VERSION)
-$(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX := $($(combo_2nd_arch_prefix)TARGET_TOOLCHAIN_ROOT)/bin/arm-linux-androideabi-
-endif
+$(combo_2nd_arch_prefix)TARGET_AND_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$($(combo_2nd_arch_prefix)TARGET_AND_GCC_VERSION)
+$(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX := $($(combo_2nd_arch_prefix)TARGET_AND_TOOLCHAIN_ROOT)/bin/arm-linux-androideabi-
 
+# You can set TARGET_KERNEL_TOOLS_PREFIX to get gcc from somewhere else
+TARGET_KERNEL_TOOLS_PREFIX := arm-eabi-
+
+# Android compiler binaries
 $(combo_2nd_arch_prefix)TARGET_CC := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
 $(combo_2nd_arch_prefix)TARGET_CXX := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
 $(combo_2nd_arch_prefix)TARGET_AR := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)ar$(HOST_EXECUTABLE_SUFFIX)
@@ -67,10 +99,15 @@ $(combo_2nd_arch_prefix)TARGET_STRIP := $($(combo_2nd_arch_prefix)TARGET_TOOLS_P
 
 $(combo_2nd_arch_prefix)TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
-$(combo_2nd_arch_prefix)TARGET_arm_CFLAGS :=    -O2 \
-                        -fomit-frame-pointer \
-                        -fstrict-aliasing    \
-                        -funswitch-loops
+# Modules can choose to compile some source as arm.
+$(combo_2nd_arch_prefix)TARGET_arm_CFLAGS := -fomit-frame-pointer
+
+ifneq ($(strip $(O3_OPTIMIZATIONS)),true)
+  $(combo_2nd_arch_prefix)TARGET_arm_CFLAGS += -O2 -g
+endif
+ifeq ($(strip $(ENABLE_STRICT_ALIASING)),true)
+  $(combo_2nd_arch_prefix)TARGET_arm_CFLAGS += -fstrict-aliasing
+endif
 
 # Modules can choose to compile some source as thumb.
 $(combo_2nd_arch_prefix)TARGET_thumb_CFLAGS :=  -mthumb \
@@ -114,10 +151,8 @@ $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += \
 # "-Wall -Werror" due to a commom idiom "ALOGV(mesg)" where ALOGV is turned
 # into no-op in some builds while mesg is defined earlier. So we explicitly
 # disable "-Wunused-but-set-variable" here.
-ifneq ($(filter 4.6 4.6.% 4.7 4.7.% 4.8, $($(combo_2nd_arch_prefix)TARGET_GCC_VERSION)),)
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -fno-builtin-sin \
 			-fno-strict-volatile-bitfields
-endif
 
 # This is to avoid the dreaded warning compiler message:
 #   note: the mangling of 'va_list' has changed in GCC 4.4
@@ -138,23 +173,25 @@ $(combo_2nd_arch_prefix)TARGET_GLOBAL_LDFLAGS += \
 			-Wl,--icf=safe \
 			$(arch_variant_ldflags)
 
-$(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -mthumb-interwork
+ifneq ($(strip $(ENABLE_SABERMOD_ARM_MODE)),true)
+  $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -mthumb-interwork
+endif
 
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 
 # More flags/options can be added here
 $(combo_2nd_arch_prefix)TARGET_RELEASE_CFLAGS := \
 			-DNDEBUG \
-			-g \
-			-Wstrict-aliasing=2 \
 			-fgcse-after-reload \
-			-frerun-cse-after-loop \
 			-frename-registers
+
+ifneq ($(strip $(O3_OPTIMIZATIONS)),true)
+  TARGET_RELEASE_CFLAGS += -O2 -g
+endif
 
 libc_root := bionic/libc
 libm_root := bionic/libm
 libstdc++_root := bionic/libstdc++
-
 
 ## on some hosts, the target cross-compiler is not available so do not run this command
 ifneq ($(wildcard $($(combo_2nd_arch_prefix)TARGET_CC)),)

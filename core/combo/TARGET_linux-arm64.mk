@@ -37,10 +37,29 @@ endif
 # Decouple NDK library selection with platform compiler version
 TARGET_NDK_GCC_VERSION := 4.9
 
+# Decouple android compiler version from kernel compiler version
+ifeq ($(strip $(TARGET_SM_AND)),)
 ifeq ($(strip $(TARGET_GCC_VERSION_EXP)),)
-TARGET_GCC_VERSION := 4.9
+TARGET_AND_GCC_VERSION := 4.9
 else
-TARGET_GCC_VERSION := $(TARGET_GCC_VERSION_EXP)
+TARGET_AND_GCC_VERSION := $(TARGET_GCC_VERSION_EXP)
+endif
+else
+TARGET_AND_GCC_VERSION := $(TARGET_SM_AND)
+endif
+
+# Decouple kernel compiler version from android compiler version
+ifeq ($(strip $(TARGET_SM_KERNEL)),)
+TARGET_KERNEL_GCC_VERSION := $(TARGET_AND_GCC_VERSION)
+else
+TARGET_KERNEL_GCC_VERSION := $(TARGET_SM_KERNEL)
+endif
+
+# Allow overriding of NDK toolchain version
+ifdef TARGET_NDK_VERSION
+
+# Decouple NDK library selection with platform compiler version
+TARGET_NDK_GCC_VERSION := $(TARGET_NDK_VERSION)
 endif
 
 TARGET_ARCH_SPECIFIC_MAKEFILE := $(BUILD_COMBOS)/arch/$(TARGET_ARCH)/$(TARGET_ARCH_VARIANT).mk
@@ -52,11 +71,15 @@ include $(TARGET_ARCH_SPECIFIC_MAKEFILE)
 include $(BUILD_SYSTEM)/combo/fdo.mk
 
 # You can set TARGET_TOOLS_PREFIX to get gcc from somewhere else
-ifeq ($(strip $(TARGET_TOOLS_PREFIX)),)
-TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/aarch64/aarch64-linux-android-$(TARGET_GCC_VERSION)
-TARGET_TOOLS_PREFIX := $(TARGET_TOOLCHAIN_ROOT)/bin/aarch64-linux-android-
+TARGET_AND_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/aarch64/aarch64-linux-android-$(TARGET_AND_GCC_VERSION)
+TARGET_TOOLS_PREFIX := $(TARGET_AND_TOOLCHAIN_ROOT)/bin/aarch64-linux-android-
+
+# You can set TARGET_KERNEL_TOOLS_PREFIX to get gcc from somewhere else
+ifeq ($(strip $(TARGET_KERNEL_TOOLS_PREFIX)),)
+TARGET_KERNEL_TOOLS_PREFIX := aarch64-
 endif
 
+# Android compiler binaries
 TARGET_CC := $(TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
 TARGET_CXX := $(TARGET_TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
 TARGET_AR := $(TARGET_TOOLS_PREFIX)ar$(HOST_EXECUTABLE_SUFFIX)
@@ -118,11 +141,12 @@ TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 # More flags/options can be added here
 TARGET_RELEASE_CFLAGS := \
 			-DNDEBUG \
-			-O2 -g \
-			-Wstrict-aliasing=2 \
 			-fgcse-after-reload \
-			-frerun-cse-after-loop \
 			-frename-registers
+
+ifneq ($(strip $(O3_OPTIMIZATIONS)),true)
+  TARGET_RELEASE_CFLAGS += -O2
+endif
 
 libc_root := bionic/libc
 libm_root := bionic/libm
