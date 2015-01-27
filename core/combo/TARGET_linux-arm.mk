@@ -121,10 +121,9 @@ $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += \
 # "-Wall -Werror" due to a commom idiom "ALOGV(mesg)" where ALOGV is turned
 # into no-op in some builds while mesg is defined earlier. So we explicitly
 # disable "-Wunused-but-set-variable" here.
-ifneq ($(filter 4.6 4.6.% 4.7 4.7.% 4.8 4.8.% 4.9 4.9.%, $($(combo_2nd_arch_prefix)TARGET_GCC_VERSION)),)
-$(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -fno-builtin-sin \
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += \
+			-fno-builtin-sin \
 			-fno-strict-volatile-bitfields
-endif
 
 # This is to avoid the dreaded warning compiler message:
 #   note: the mangling of 'va_list' has changed in GCC 4.4
@@ -149,7 +148,7 @@ $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += $(BOARD_GLOBAL_CFLAGS)
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_CPPFLAGS += $(BOARD_GLOBAL_CPPFLAGS)
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_LDFLAGS += $(BOARD_GLOBAL_LDFLAGS)
 
-$(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -mthumb-interwork
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -marm
 
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 
