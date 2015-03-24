@@ -16,7 +16,9 @@
 # Disable some modules that break with -O3
 LOCAL_DISABLE_O3 := \
    libaudioflinger \
-   libwebviewchromium
+   libwebviewchromium \
+   libwebviewchromium_loader \
+   libwebviewchromium_plat_support
 
 O3_FLAGS := \
    -O3 \

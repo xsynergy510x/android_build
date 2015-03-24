@@ -15,7 +15,10 @@
 
 LOCAL_DISABLE_PTHREAD := \
    libc_netbsd \
-   libdl
+   libdl \
+   libwebviewchromium \
+   libwebviewchromium_loader \
+   libwebviewchromium_plat_support
 
 ifneq (1,$(words $(filter $(LOCAL_DISABLE_PTHREAD),$(LOCAL_MODULE))))
   ifdef LOCAL_CFLAGS

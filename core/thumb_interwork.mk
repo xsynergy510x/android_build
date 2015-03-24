@@ -13,6 +13,11 @@
 # limitations under the License.
 #
 
+LOCAL_DISABLE_THUMB_INTERWORK := \
+   libwebviewchromium \
+   libwebviewchromium_loader \
+   libwebviewchromium_plat_support
+
 ifeq ($(strip (TARGET_ARCH)),arm)
   ifneq (1,$(words $(filter $(LOCAL_DISABLE_THUMB_INTERWORK),$(LOCAL_MODULE))))
     ifdef LOCAL_CFLAGS
