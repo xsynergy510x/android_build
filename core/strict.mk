@@ -88,7 +88,8 @@ LOCAL_DISABLE_STRICT := \
 
 STRICT_ALIAS := \
    -fstrict-aliasing \
-   -Werror=strict-aliasing 
+   -Werror=strict-aliasing \
+   $(call cc-option, -fstrict-aliasing, -Wstrict-aliasing=3, -Werror=strict-aliasing)
 
 ifneq (1,$(words $(filter $(LOCAL_DISABLE_STRICT),$(LOCAL_MODULE))))
   ifdef LOCAL_CFLAGS
