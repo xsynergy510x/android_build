@@ -13,96 +13,16 @@
 # limitations under the License.
 #
 
-# Force disable strict aliasing for some modules
-LOCAL_DISABLE_STRICT := \
-	libc_bionic \
-	libc_dns \
-	libc_tzcode \
-	libziparchive \
-	libtwrpmtp \
-	libfusetwrp \
-	libguitwrp \
-	busybox \
-	libuclibcrpc \
-	libziparchive-host \
-	libpdfiumcore \
-	libandroid_runtime \
-	libmedia \
-	libpdfiumcore \
-	libpdfium \
-	bluetooth.default \
-	logd \
-	mdnsd \
-	net_net_gyp \
-	libstagefright_webm \
-	libaudioflinger \
-	libmediaplayerservice \
-	libstagefright \
-	ping \
-	ping6 \
-	libdiskconfig \
-	libjavacore \
-	libfdlibm \
-	libvariablespeed \
-	librtp_jni \
-	libwilhelm \
-	libdownmix \
-	libldnhncr \
-	libqcomvisualizer \
-	libvisualizer \
-	libstlport \
-	libutils \
-	libandroidfw \
-	dnsmasq \
-	static_busybox \
-	libwebviewchromium \
-	libwebviewchromium_loader \
-	libwebviewchromium_plat_support \
-	content_content_renderer_gyp \
-	third_party_WebKit_Source_modules_modules_gyp \
-	third_party_WebKit_Source_platform_blink_platform_gyp \
-	third_party_WebKit_Source_core_webcore_remaining_gyp \
-	third_party_angle_src_translator_lib_gyp \
-	third_party_WebKit_Source_core_webcore_generated_gyp \
-	libc_gdtoa \
-	libc_openbsd \
-	libc \
-	libc_nomalloc \
-	patchoat \
-	dex2oat \
-	libart \
-	libart-compiler \
-	oatdump \
-	libart-disassembler \
-	libminivold \
-	libstlport_static \
-	libcrypto_static \
-	libfuse \
-	libbusybox \
-	gatt_testtool \
-	libssh \
-	ssh \
-	mm-vdec-omx-test \
-	audio.primary.msm8960 \
-	lsof
+ifdef LOCAL_CFLAGS
+  LOCAL_CFLAGS += $(call cc-option, -fstrict-aliasing, -Wstrict-aliasing=3, -Werror=strict-aliasing)
+else
+  LOCAL_CFLAGS := $(call cc-option, -fstrict-aliasing, -Wstrict-aliasing=3, -Werror=strict-aliasing)
+endif
 
-STRICT_ALIAS := \
-   -fstrict-aliasing \
-   -Werror=strict-aliasing \
-   $(call cc-option, -fstrict-aliasing, -Wstrict-aliasing=3, -Werror=strict-aliasing)
-
-ifneq (1,$(words $(filter $(LOCAL_DISABLE_STRICT),$(LOCAL_MODULE))))
-  ifdef LOCAL_CFLAGS
-    LOCAL_CFLAGS += $(STRICT_ALIAS)
-  else
-    LOCAL_CFLAGS := $(STRICT_ALIAS)
-  endif
-
-  ifdef LOCAL_CPPFLAGS
-    LOCAL_CPPFLAGS += $(STRICT_ALIAS)
-  else
-    LOCAL_CPPFLAGS := $(STRICT_ALIAS)
-  endif
+ifdef LOCAL_CPPFLAGS
+  LOCAL_CPPFLAGS += $(call cpp-option, -fstrict-aliasing, -Wstrict-aliasing=3, -Werror=strict-aliasing)
+else
+  LOCAL_CPPFLAGS := $(call cpp-option, -fstrict-aliasing, -Wstrict-aliasing=3, -Werror=strict-aliasing)
 endif
 
 #####
