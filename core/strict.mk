@@ -102,43 +102,6 @@ ifneq (1,$(words $(filter $(LOCAL_DISABLE_STRICT),$(LOCAL_MODULE))))
   else
     LOCAL_CPPFLAGS := $(STRICT_ALIAS)
   endif
-
-  ifdef LOCAL_CONLYFLAGS
-    LOCAL_CONLYFLAGS += $(STRICT_ALIAS)
-  else
-    LOCAL_CONLYFLAGS := $(STRICT_ALIAS)
-  endif
-
-  ifndef LOCAL_CLANG
-    LOCAL_CONLYFLAGS += -Wstrict-aliasing=3
-    LOCAL_CPPFLAGS += -Wstrict-aliasing=3
-  else
-    LOCAL_CONLYFLAGS += -Wstrict-aliasing=2
-    LOCAL_CPPFLAGS += -Wstrict-aliasing=2
-  endif
 endif
 
-LOCAL_FORCE_DISABLE_STRICT := \
-        libziparchive-host \
-        libziparchive \
-        libdiskconfig \
-        logd \
-        libjavacore \
-	libwebviewchromium \
-	libwebviewchromium_loader \
-	libwebviewchromium_plat_support
-
-ifeq (1,$(words $(filter $(LOCAL_FORCE_DISABLE_STRICT),$(LOCAL_MODULE))))
-  ifdef LOCAL_CONLYFLAGS
-    LOCAL_CONLYFLAGS +=	-fno-strict-aliasing
-  else
-    LOCAL_CONLYFLAGS :=	-fno-strict-aliasing
-  endif
-
-  ifdef LOCAL_CPPFLAGS
-    LOCAL_CPPFLAGS += -fno-strict-aliasing
-  else
-    LOCAL_CPPFLAGS := -fno-strict-aliasing
-  endif
-endif
 #####
