@@ -123,7 +123,10 @@ LOCAL_FORCE_DISABLE_STRICT := \
         libziparchive \
         libdiskconfig \
         logd \
-        libjavacore
+        libjavacore \
+	libwebviewchromium \
+	libwebviewchromium_loader \
+	libwebviewchromium_plat_support
 
 ifeq (1,$(words $(filter $(LOCAL_FORCE_DISABLE_STRICT),$(LOCAL_MODULE))))
   ifdef LOCAL_CONLYFLAGS
