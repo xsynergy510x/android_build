@@ -1682,6 +1682,8 @@ bacon: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(CM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(CM_TARGET_PACKAGE) > $(CM_TARGET_PACKAGE).md5sum
 	@echo -e ${CL_CYN}"Package Complete: $(CM_TARGET_PACKAGE)"${CL_RST}
+	@echo "Running OptiCharger..."
+	$(hide) APKCERTS=$(APKCERTS_FILE) ./build/tools/releasetools/squisher
 
 endif    # recovery_fstab is defined
 endif    # TARGET_NO_KERNEL != true
