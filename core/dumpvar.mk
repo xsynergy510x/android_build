@@ -92,7 +92,7 @@ $(info   CYNGN_FEATURES=$(CYNGN_FEATURES))
 endif
 $(info =====================================================================)
 ifdef SM_VENDOR
-  # Include sabermod clean_vars
-  include $(SM_VENDOR)/build/clear_vars.mk
+  # Include sabermod dumpvar.mk
+  include $(SM_VENDOR)/build/dumpvar.mk
 endif
 endif
