@@ -108,7 +108,7 @@ $(combo_2nd_arch_prefix)TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 $(combo_2nd_arch_prefix)TARGET_arm_CFLAGS := -fomit-frame-pointer
 
 ifneq ($(strip $(O3_OPTIMIZATIONS)),true)
-  $(combo_2nd_arch_prefix)TARGET_arm_CFLAGS += -O2 -g
+  $(combo_2nd_arch_prefix)TARGET_arm_CFLAGS += -O2
 endif
 ifeq ($(strip $(ENABLE_STRICT_ALIASING)),true)
   $(combo_2nd_arch_prefix)TARGET_arm_CFLAGS += -fstrict-aliasing
