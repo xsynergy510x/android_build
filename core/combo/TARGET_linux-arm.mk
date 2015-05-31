@@ -85,14 +85,6 @@ include $(BUILD_SYSTEM)/combo/fdo.mk
 $(combo_2nd_arch_prefix)TARGET_AND_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$($(combo_2nd_arch_prefix)TARGET_AND_GCC_VERSION)
 $(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX := $($(combo_2nd_arch_prefix)TARGET_AND_TOOLCHAIN_ROOT)/bin/arm-linux-androideabi-
 
-ifdef TARGET_KERNEL_TOOLS_PREFIX
-export TARGET_KERNEL_TOOLS_PREFIX := $(TARGET_KERNEL_TOOLS_PREFIX)
-else
-
-  # You can set TARGET_KERNEL_TOOLS_PREFIX to get gcc from somewhere else
-export TARGET_KERNEL_TOOLS_PREFIX := arm-eabi-
-endif
-
 # Android compiler binaries
 $(combo_2nd_arch_prefix)TARGET_CC := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
 $(combo_2nd_arch_prefix)TARGET_CXX := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
