@@ -139,7 +139,7 @@ TARGET_RELEASE_CFLAGS := \
 			-fgcse-after-reload \
 			-frename-registers
 
-ifneq ($(strip $(O3_OPTIMIZATIONS)),true)
+ifneq ($(strip $(LOCAL_O3)),true)
   TARGET_RELEASE_CFLAGS += -O2
 endif
 
