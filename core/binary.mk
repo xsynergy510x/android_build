@@ -118,12 +118,12 @@ include $(BUILD_SYSTEM)/sabermod/O3.mk
 
 ifneq ($(strip $(LOCAL_IS_HOST_MODULE)),true)
   ifneq ($(strip $(LOCAL_CLANG)),true)
-    include $(BUILD_SYSTEM)/sabermod/extra_sm_flags.mk
-    include $(BUILD_SYSTEM)/sabermod/gcconly.mk
+#    include $(BUILD_SYSTEM)/sabermod/extra_sm_flags.mk
+#    include $(BUILD_SYSTEM)/sabermod/gcconly.mk
     include $(BUILD_SYSTEM)/sabermod/graphite.mk
-    include $(BUILD_SYSTEM)/sabermod/nest.mk
+#    include $(BUILD_SYSTEM)/sabermod/nest.mk
     include $(BUILD_SYSTEM)/sabermod/openmp.mk
-    include $(BUILD_SYSTEM)/sabermod/strict.mk
+#    include $(BUILD_SYSTEM)/sabermod/strict.mk
   endif
 endif
 
