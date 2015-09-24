@@ -6,6 +6,7 @@ ARCH_ARM_HAVE_VFP               := true
 ARCH_ARM_HAVE_VFP_D32           := true
 ARCH_ARM_HAVE_NEON              := true
 
+ifndef USE_GCC_DEFAULTS
 ifneq (,$(filter cortex-a15 denver krait,$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)))
 	arch_variant_cflags := -mcpu=cortex-a15 -mfpu=neon-vfpv4
 
@@ -43,6 +44,8 @@ endif
 endif
 endif
 endif
+else
+	arch_variant_cflags := $(USE_GCC_DEFAULTS)
 endif
 
 # arm64 doesn't like cortex-a15 in the kernel
