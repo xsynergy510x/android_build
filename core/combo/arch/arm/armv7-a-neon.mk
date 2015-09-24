@@ -44,6 +44,7 @@ endif
 endif
 endif
 endif
+endif
 else
 	arch_variant_cflags := $(USE_GCC_DEFAULTS)
 endif
