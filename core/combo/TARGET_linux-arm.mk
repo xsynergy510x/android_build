@@ -109,8 +109,7 @@ endif
 # Modules can choose to compile some source as thumb.
 $(combo_2nd_arch_prefix)TARGET_thumb_CFLAGS :=  -mthumb \
                         -Os \
-                        -fomit-frame-pointer \
-                        -fno-strict-aliasing
+                        -fomit-frame-pointer
 
 # Set FORCE_ARM_DEBUGGING to "true" in your buildspec.mk
 # or in your environment to force a full arm build, even for
@@ -129,7 +128,7 @@ endif
 android_config_h := $(call select-android-config-h,linux-arm)
 
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += \
-			-msoft-float \
+			-mfloat-abi=softfp \
 			-ffunction-sections \
 			-fdata-sections \
 			-funwind-tables \
