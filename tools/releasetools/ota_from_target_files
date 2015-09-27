@@ -700,6 +700,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   common.ZipWriteStr(output_zip, "supersu/supersu.zip",
                  ""+input_zip.read("INSTALL/UPDATE-SuperSU.zip"))
   script.FlashSuperSU()
+  script.Mount("/system")
 
   script.Print(" ");
   script.Print("Installing boot.img...")
@@ -711,10 +712,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   if OPTIONS.extra_script is not None:
     script.AppendExtra(OPTIONS.extra_script)
-
-  # SuperSU leave /system unmounted while we need it mounted here to avoid
-  # a warning from non-Multirom TWRP
-  script.Mount("/system")
 
   script.UnmountAll()
   script.Print(" ");
