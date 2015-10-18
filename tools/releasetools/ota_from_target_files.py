@@ -605,6 +605,22 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print("Target: %s" % CalculateFingerprint(
       oem_props, oem_dict, OPTIONS.info_dict))
 
+  script.Print("########################################");
+  script.Print(" ");
+  script.Print("Installing...                           ");
+  script.Print("                                        ");
+  script.Print("      ,cCCCc.     MMMm       mMMM  13.0 ");
+  script.Print("    ,cCCCCCCC.    MMMmm     m MMM       ");
+  script.Print("   ,CC       C`   MMM mm   m  MMM       ");
+  script.Print("   CCC            MMM  mm m   MMM       ");
+  script.Print("   `CC       C,   MMM   mm    MMM       ");
+  script.Print("    `CCCCCCCC,    MMM         MMM       ");
+  script.Print("      `CCCC'      MMM         MMM       ");
+  script.Print("      Optimized by xSynergy510x...      ");
+  script.Print(" ");
+  script.Print("########################################");
+  script.Print(" ");
+
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
 
@@ -614,6 +630,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.SetPermissionsRecursive("/tmp/install/bin", 0, 0, 0755, 0755, None, None)
 
   if OPTIONS.backuptool:
+    script.Print("Running Backuptool");
+    script.Print(" ");
     script.Mount("/system")
     script.RunBackup("backup")
     script.Unmount("/system")
@@ -651,12 +669,18 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     system_diff = common.BlockDifference("system", system_tgt, src=None)
     system_diff.WriteScript(script, output_zip)
   else:
+    script.Print("Formatting /system");
+    script.Print(" ");
     script.FormatPartition("/system")
     script.Mount("/system", recovery_mount_options)
     if not has_recovery_patch:
       script.UnpackPackageDir("recovery", "/system")
+    script.Print("Unpacking /system files");
+    script.Print(" ");
     script.UnpackPackageDir("system", "/system")
 
+    script.Print("SymLinking /system files");
+    script.Print(" ");
     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
     script.MakeSymlinks(symlinks)
 
@@ -700,14 +724,20 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   device_specific.FullOTA_PostValidate()
 
   if OPTIONS.backuptool:
+    script.Print("Restoring via Backuptool");
+    script.Print(" ");
     script.ShowProgress(0.02, 10)
     if block_based:
       script.Mount("/system")
     script.RunBackup("restore")
 
+  script.Print("Installing boot.img");
+  script.Print(" ");
   script.ShowProgress(0.05, 5)
   script.WriteRawImage("/boot", "boot.img")
 
+  script.Print("Finishing up installation");
+  script.Print(" ");
   script.ShowProgress(0.2, 10)
   device_specific.FullOTA_InstallEnd()
 
@@ -715,6 +745,12 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.AppendExtra(OPTIONS.extra_script)
 
   script.UnmountAll()
+  script.Print("########################################");
+  script.Print(" ");
+  script.Print("SaberMod CM13.0 installation complete!  ");
+  script.Print(" ");
+  script.Print("########################################");
+  script.Print(" ");
 
   if OPTIONS.wipe_user_data:
     script.ShowProgress(0.1, 10)
