@@ -991,6 +991,11 @@ else
 
   device_specific.IncrementalOTA_InstallBegin()
 
+  CopyInstallTools(output_zip)
+  script.UnpackPackageDir("install", "/tmp/install")
+  script.SetPermissionsRecursive("/tmp/install", 0, 0, 0755, 0644, None, None)
+  script.SetPermissionsRecursive("/tmp/install/bin", 0, 0, 0755, 0755, None, None)
+
   system_diff.WriteScript(script, output_zip,
                           progress=0.8 if vendor_diff else 0.9)
   if vendor_diff:
