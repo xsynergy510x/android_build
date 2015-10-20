@@ -93,6 +93,18 @@ class EdifyGenerator(object):
            ) % (" or ".join(fp),)
     self.script.append(cmd)
 
+  def AssertSomePrevBuild(self, *time):
+    """Assert that we're flashing on the proper previous."""
+    if not time:
+      raise ValueError("must specify some previous UTC build date")
+    cmd = (
+           ' ||\n    '.join([('getprop("ro.build.date.utc") == "%s"')
+                        % i for i in time]) +
+           ' ||\n    abort("Package expects UTC build date of %s; this '
+           'device has " + getprop("ro.build.date.utc") + ".");'
+           ) % (" or ".join(time),)
+    self.script.append(cmd)
+
   def AssertSomeThumbprint(self, *fp):
     """Assert that the current recovery build thumbprint is one of *fp."""
     if not fp:

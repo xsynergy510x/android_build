@@ -940,9 +940,9 @@ else if get_stage("%(bcb_dev)s") != "3/3" then
     # system. Because operations like move don't check the block state, they
     # always apply the changes unconditionally.
     if blockimgdiff_version <= 2:
-      script.AssertSomeFingerprint(source_fp)
+      script.AssertSomePrevBuild(source_fp)
     else:
-      script.AssertSomeFingerprint(source_fp, target_fp)
+      script.AssertSomePrevBuild(source_fp, target_fp)
   else:
     if blockimgdiff_version <= 2:
       script.AssertSomeThumbprint(
