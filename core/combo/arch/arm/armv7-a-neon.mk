@@ -8,7 +8,7 @@ ARCH_ARM_HAVE_NEON              := true
 
 ifndef USE_GCC_DEFAULTS
 ifneq (,$(filter cortex-a15 denver krait,$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)))
-	arch_variant_cflags := -mcpu=cortex-a15 -mfpu=neon-vfpv4
+	arch_variant_cflags := -mcpu=cortex-a15
 
 	# Fake an ARM compiler flag as these processors support LPAE which GCC/clang
 	# don't advertise.
@@ -17,26 +17,26 @@ ifneq (,$(filter cortex-a15 denver krait,$(TARGET_$(combo_2nd_arch_prefix)CPU_VA
 		-Wl,--no-fix-cortex-a8
 else
 ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),cortex-a9)
-	arch_variant_cflags := -mcpu=cortex-a9 -mfpu=neon
+	arch_variant_cflags := -mcpu=cortex-a9
 	arch_variant_ldflags := \
 		-Wl,--no-fix-cortex-a8
 else
 ifneq (,$(filter cortex-a8 scorpion,$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)))
-	arch_variant_cflags := -mcpu=cortex-a8 -mfpu=neon
+	arch_variant_cflags := -mcpu=cortex-a8
 	arch_variant_ldflags := \
 		-Wl,--fix-cortex-a8
 else
 ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),cortex-a7)
-	arch_variant_cflags := -mcpu=cortex-a7 -mfpu=neon-vfpv4
+	arch_variant_cflags := -mcpu=cortex-a7
 	arch_variant_ldflags := \
 		-Wl,--no-fix-cortex-a8
 else
 ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),cortex-a5)
-	arch_variant_cflags := -mcpu=cortex-a7 -mfpu=neon-vfpv4
+	arch_variant_cflags := -mcpu=cortex-a7
 	arch_variant_ldflags := \
 		-Wl,--no-fix-cortex-a8
 else
-	arch_variant_cflags := -march=armv7-a -mfpu=neon
+	arch_variant_cflags := -march=armv7-a
 	# Generic ARM might be a Cortex A8 -- better safe than sorry
 	arch_variant_ldflags := \
 		-Wl,--fix-cortex-a8
@@ -56,7 +56,8 @@ ifeq (denver,$(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT))
 endif
 
 arch_variant_cflags += \
-    -mfloat-abi=softfp
+    -mfloat-abi=softfp \
+    -mfpu=neon
 
 # For neon vfpv4 type, override -mfpu=neon with -mfpu=neon-vfpv4
 # Have the clang compiler ignore unknow flag option -mfpu=neon-vfpv4
