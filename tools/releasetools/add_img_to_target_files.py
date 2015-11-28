@@ -40,6 +40,9 @@ OPTIONS = common.OPTIONS
 
 OPTIONS.add_missing = False
 OPTIONS.rebuild_recovery = False
+OPTIONS.replace_verity_public_key = False
+OPTIONS.replace_verity_private_key = False
+OPTIONS.verity_signer_path = None
 
 def AddSystem(output_zip, prefix="IMAGES/", recovery_img=None, boot_img=None):
   """Turn the contents of SYSTEM into a system image and store it in
@@ -191,17 +194,28 @@ def AddUserdata(output_zip, prefix="IMAGES/"):
   os.rmdir(temp_dir)
 
 
-def AddUserdataExtra(output_zip):
+def AddUserdataExtra(output_zip, prefix="IMAGES/"):
   """Create extra userdata image and store it in output_zip."""
 
   image_props = build_image.ImagePropFromGlobalDict(OPTIONS.info_dict,
                                                   "data_extra")
-  # If no userdataextra_size is provided for extfs, skip userdata_extra.img.
-  if (image_props.get("fs_type", "").startswith("ext") and
-      not image_props.get("partition_size")):
+
+  # The build system has to explicitly request extra userdata.
+  if "fs_type" not in image_props:
     return
 
   extra_name = image_props.get("partition_name", "extra")
+
+  prebuilt_path = os.path.join(OPTIONS.input_tmp, prefix, "userdata_%s.img" % extra_name)
+  if os.path.exists(prebuilt_path):
+    print "userdata_%s.img already exists in %s, no need to rebuild..." % (extra_name, prefix,)
+    return
+
+  # We only allow yaffs to have a 0/missing partition_size.
+  # Extfs, f2fs must have a size. Skip userdata_extra.img if no size.
+  if (not image_props.get("fs_type", "").startswith("yaffs") and
+      not image_props.get("partition_size")):
+    return
 
   print "creating userdata_%s.img..." % extra_name
 
@@ -221,7 +235,7 @@ def AddUserdataExtra(output_zip):
 
   # Disable size check since this fetches original data partition size
   #common.CheckSize(img.name, "userdata_extra.img", OPTIONS.info_dict)
-  output_zip.write(img.name, "userdata_%s.img" % extra_name)
+  output_zip.write(img.name, prefix + "userdata_%s.img" % extra_name)
   img.close()
   os.rmdir(user_dir)
   os.rmdir(temp_dir)
@@ -334,18 +348,27 @@ def AddImagesToTargetFiles(filename):
   common.ZipClose(output_zip)
 
 def main(argv):
-  def option_handler(o, _):
+  def option_handler(o, a):
     if o in ("-a", "--add_missing"):
       OPTIONS.add_missing = True
     elif o in ("-r", "--rebuild_recovery",):
       OPTIONS.rebuild_recovery = True
+    elif o == "--replace_verity_private_key":
+      OPTIONS.replace_verity_private_key = (True, a)
+    elif o == "--replace_verity_public_key":
+      OPTIONS.replace_verity_public_key = (True, a)
+    elif o == "--verity_signer_path":
+      OPTIONS.verity_signer_path = a
     else:
       return False
     return True
 
   args = common.ParseOptions(
       argv, __doc__, extra_opts="ar",
-      extra_long_opts=["add_missing", "rebuild_recovery"],
+      extra_long_opts=["add_missing", "rebuild_recovery",
+                       "replace_verity_public_key=",
+                       "replace_verity_private_key=",
+                       "verity_signer_path="],
       extra_option_handler=option_handler)
 
 

@@ -1,9 +1,6 @@
 # Target-specific configuration
 
 # Populate the qcom hardware variants in the project pathmap.
-define qcom-set-path-variant
-$(call project-set-path-variant,qcom-$(2),TARGET_QCOM_$(1)_VARIANT,hardware/qcom/$(2))
-endef
 define ril-set-path-variant
 $(call project-set-path-variant,ril,TARGET_RIL_VARIANT,hardware/$(1))
 endef
@@ -13,11 +10,11 @@ endef
 define bt-vendor-set-path-variant
 $(call project-set-path-variant,bt-vendor,TARGET_BT_VENDOR_VARIANT,hardware/qcom/$(1))
 endef
-define gps-hal-set-path-variant
-$(call project-set-path-variant,gps-hal,TARGET_GPS_HAL_PATH,$(1))
-endef
-define loc-api-set-path-variant
-$(call project-set-path-variant,loc-api,TARGET_LOC_API_PATH,$(1))
+
+# Set device-specific HALs into project pathmap
+define set-device-specific-path
+$(call project-set-path,qcom-$(2),$(strip $(if $(USE_DEVICE_SPECIFIC_$(1)), \
+    $(TARGET_DEVICE_DIR)/$(2), $(3))))
 endef
 
 ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
@@ -27,7 +24,6 @@ ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
     qcom_flags += -DQTI_BSP
 
     TARGET_USES_QCOM_BSP := true
-    TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 
     # Tell HALs that we're compiling an AOSP build with an in-line kernel
     TARGET_COMPILE_WITH_MSM_KERNEL := true
@@ -35,6 +31,10 @@ ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
     ifneq ($(filter msm7x30 msm8660 msm8960,$(TARGET_BOARD_PLATFORM)),)
         # Enable legacy graphics functions
         qcom_flags += -DQCOM_BSP_LEGACY
+        # Enable legacy audio functions
+        ifeq ($(BOARD_USES_LEGACY_ALSA_AUDIO),true)
+            qcom_flags += -DLEGACY_ALSA_AUDIO
+        endif
     endif
 
     TARGET_GLOBAL_CFLAGS += $(qcom_flags)
@@ -65,30 +65,31 @@ ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
     endif
 
 $(call project-set-path,qcom-audio,hardware/qcom/audio-caf/$(QCOM_HARDWARE_VARIANT))
-ifeq ($(USE_DEVICE_SPECIFIC_CAMERA),true)
-$(call project-set-path,qcom-camera,$(TARGET_DEVICE_DIR)/camera)
-else
-$(call qcom-set-path-variant,CAMERA,camera)
-endif
 $(call project-set-path,qcom-display,hardware/qcom/display-caf/$(QCOM_HARDWARE_VARIANT))
-$(call qcom-set-path-variant,GPS,gps)
 $(call project-set-path,qcom-media,hardware/qcom/media-caf/$(QCOM_HARDWARE_VARIANT))
-$(call qcom-set-path-variant,SENSORS,sensors)
+
+$(call set-device-specific-path,CAMERA,camera,hardware/qcom/camera)
+$(call set-device-specific-path,GPS,gps,hardware/qcom/gps)
+$(call set-device-specific-path,SENSORS,sensors,hardware/qcom/sensors)
+$(call set-device-specific-path,LOC_API,loc-api,vendor/qcom/opensource/location)
+
 $(call ril-set-path-variant,ril)
 $(call wlan-set-path-variant,wlan-caf)
 $(call bt-vendor-set-path-variant,bt-caf)
-$(call loc-api-set-path-variant,vendor/qcom/opensource/location)
-$(call gps-hal-set-path-variant,hardware/qcom/gps)
+
 else
+
 $(call project-set-path,qcom-audio,hardware/qcom/audio/default)
-$(call qcom-set-path-variant,CAMERA,camera)
 $(call project-set-path,qcom-display,hardware/qcom/display/$(TARGET_BOARD_PLATFORM))
-$(call qcom-set-path-variant,GPS,gps)
 $(call project-set-path,qcom-media,hardware/qcom/media/default)
-$(call qcom-set-path-variant,SENSORS,sensors)
+
+$(call project-set-path,CAMERA,hardware/qcom/camera)
+$(call project-set-path,GPS,hardware/qcom/gps)
+$(call project-set-path,SENSORS,hardware/qcom/sensors)
+$(call project-set-path,LOC_API,vendor/qcom/opensource/location)
+
 $(call ril-set-path-variant,ril)
 $(call wlan-set-path-variant,wlan)
 $(call bt-vendor-set-path-variant,bt)
-$(call loc-api-set-path-variant,vendor/qcom/opensource/location)
-$(call gps-hal-set-path-variant,hardware/qcom/gps)
+
 endif
