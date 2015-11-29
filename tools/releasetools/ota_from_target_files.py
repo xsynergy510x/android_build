@@ -757,7 +757,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.UnmountAll()
   script.Print("########################################");
   script.Print(" ");
-  script.Print("SaberMod CM13.0 installation complete!  ");
+  script.Print("Synergy's CM13.0 installation complete! ");
   script.Print(" ");
   script.Print("########################################");
   script.Print(" ");
