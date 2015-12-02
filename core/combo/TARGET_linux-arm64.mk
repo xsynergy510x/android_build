@@ -120,6 +120,10 @@ TARGET_GLOBAL_LDFLAGS += \
 # Disable transitive dependency library symbol resolving.
 TARGET_GLOBAL_LDFLAGS += -Wl,--allow-shlib-undefined
 
+TARGET_GLOBAL_CFLAGS += $(BOARD_GLOBAL_CFLAGS)
+TARGET_GLOBAL_CPPFLAGS += $(BOARD_GLOBAL_CPPFLAGS)
+TARGET_GLOBAL_LDFLAGS += $(BOARD_GLOBAL_LDFLAGS)
+
 TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 
 # More flags/options can be added here
