@@ -26,7 +26,7 @@ CLANG_CONFIG_EXTRA_CPPFLAGS :=
 CLANG_CONFIG_EXTRA_LDFLAGS :=
 
 CLANG_CONFIG_EXTRA_CFLAGS += \
-  -w -O3 -Qunused-arguments -Wno-unknown-warning-option -D__compiler_offsetof=__builtin_offsetof
+  -D__compiler_offsetof=__builtin_offsetof
 
 # Help catch common 32/64-bit errors.
 CLANG_CONFIG_EXTRA_CFLAGS += \
@@ -83,14 +83,7 @@ CLANG_CONFIG_UNKNOWN_CFLAGS := \
   -Wno-unused-local-typedefs \
   -Wunused-but-set-parameter \
   -Wunused-but-set-variable \
-  -fdiagnostics-color \
-  -fmodulo-sched \
-  -fmodulo-sched-allow-regmoves \
-  -mvectorize-with-neon-quad \
-  -fpredictive-commoning \
-  -ftree-loop-vectorize \
-  -ftree-partial-pre \
-  -fipa-cp-clone
+  -fdiagnostics-color
 
 # Clang flags for all host rules
 CLANG_CONFIG_HOST_EXTRA_ASFLAGS :=
