@@ -22,6 +22,7 @@ from shutil import rmtree, copy2, copytree
 from subprocess import call
 from zipfile import ZipFile, ZipInfo
 from hashlib import md5
+import datetime
 
 # declare all the variables needed
 fstab = open(argv[1], 'r').read()
@@ -47,7 +48,7 @@ if path.exists(defconfig):
     prekernel_version = search('CONFIG_LOCALVERSION=.*\n', open(defconfig, 'r').read())
     if prekernel_version:
         kernel_version = sub(r'(CONFIG_LOCALVERSION=)|\"|\n|-', "", prekernel_version.group(0))
-        kernel_version = "%s-%s-kernel" % (kernel_version or "CM", device)
+        kernel_version = "%s13-jflte-kernel" % (kernel_version or "CM")
     else:
         kernel_version = "cm-%s-kernel" % device
 else:
@@ -88,7 +89,12 @@ copy2(updater, "%s/update-binary" % updater_dir)
 updater_script = "%s/updater-script" % updater_dir
 
 # create the contents
-contents = "ui_print(\"installing Kernel...\");\n"
+contents = "assert(getprop(\"ro.product.device\") == \"jflte\" || getprop(\"ro.build.product\") == \"jflte\" || getprop(\"ro.product.device\") == \"jfltexx\" || getprop(\"ro.build.product\") == \"jfltexx\" || getprop(\"ro.product.device\") == \"i9505\" || getprop(\"ro.build.product\") == \"i9505\" || getprop(\"ro.product.device\") == \"GT-I9505\" || getprop(\"ro.build.product\") == \"GT-I9505\" || getprop(\"ro.product.device\") == \"jgedlte\" || getprop(\"ro.build.product\") == \"jgedlte\" || getprop(\"ro.product.device\") == \"i9505g\" || getprop(\"ro.build.product\") == \"i9505g\" || getprop(\"ro.product.device\") == \"GT-I9505G\" || getprop(\"ro.build.product\") == \"GT-I9505G\" || getprop(\"ro.product.device\") == \"jfltevzw\" || getprop(\"ro.build.product\") == \"jfltevzw\" || getprop(\"ro.product.device\") == \"jfltespr\" || getprop(\"ro.build.product\") == \"jfltespr\" || getprop(\"ro.product.device\") == \"jflterefreshspr\" || getprop(\"ro.build.product\") == \"jflterefreshspr\" || getprop(\"ro.product.device\") == \"jfltetmo\" || getprop(\"ro.build.product\") == \"jfltetmo\" || getprop(\"ro.product.device\") == \"jfltecri\" || getprop(\"ro.build.product\") == \"jfltecri\" || getprop(\"ro.product.device\") == \"jfltecsp\" || getprop(\"ro.build.product\") == \"jfltecsp\" || getprop(\"ro.product.device\") == \"jflteatt\" || getprop(\"ro.build.product\") == \"jflteatt\" || getprop(\"ro.product.device\") == \"jfltecan\" || getprop(\"ro.build.product\") == \"jfltecan\" || getprop(\"ro.product.device\") == \"jflteusc\" || getprop(\"ro.build.product\") == \"jflteusc\" || getprop(\"ro.product.device\") == \"jfltezm\" || getprop(\"ro.build.product\") == \"jfltezm\" || abort(\"This package is for device: jflte,jfltexx,i9505,GT-I9505,jgedlte,i9505g,GT-I9505G,jfltevzw,jfltespr,jflterefreshspr,jfltetmo,jfltecri,jfltecsp,jflteatt,jfltecan,jflteusc,jfltezm; this device is \" + getprop(\"ro.product.device\") + \".\"););\n"
+contents += "ui_print(\"########################################\");\n"
+contents += "ui_print(\"#\");\n"
+contents += "ui_print(\"# Installing Synergy's CM13 Kernel...\");\n"
+contents += "ui_print(\"#\");\n"
+contents += "ui_print(\"########################################\");\n"
 if boot_partition_type == "mtd":
     contents += "package_extract_file(\"boot.img\", \"/tmp/boot.img\");\n"
     contents += "write_raw_image(\"/tmp/boot.img\", \"%s\");\n" % boot_partition
@@ -137,11 +143,13 @@ with ZipFile("%s.zip" % zip_dir, "w") as zipper:
             else:
                 zipper.write(fn, fn[rootlen:])
 
+today = datetime.date.today()
+
 # sign it
 testkey_x = "%s/build/target/product/security/testkey.x509.pem" % source
 testkey_p = "%s/build/target/product/security/testkey.pk8" % source
-call(['java', '-jar', signer, testkey_x, testkey_p, "%s.zip" % zip_dir, "%s-signed.zip" % zip_dir])
+call(['java', '-jar', signer, testkey_x, testkey_p, "%s.zip" % zip_dir, "%s-%s%s%s.zip" % (zip_dir, today.year, today.month, today.day)])
 remove("%s.zip" % zip_dir)
 #rmtree(zip_dir)
-print md5(open("%s-signed.zip" % zip_dir, "rb").read()).hexdigest() + " %s-signed.zip" % (kernel_version)
-print "kernel saved to %s-signed.zip" % zip_dir
+print md5(open("%s-%s%s%s.zip" % (zip_dir, today.year, today.month, today.day), "rb").read()).hexdigest() + " %s-%s%s%s.zip" % (kernel_version, today.year, today.month, today.day)
+print "kernel saved to %s-%s%s%s.zip" % (zip_dir, today.year, today.month, today.day)
