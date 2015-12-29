@@ -109,6 +109,11 @@ contents += "package_extract_dir(\"system\", \"/system\");\n"
 contents += "ui_print(\"Setting permissions...\");\n"
 contents += "set_metadata_recursive(\"/system/lib/modules\", \"uid\", 0, \"gid\", 0, \"dmode\", 0755, \"fmode\",0644, \"capabilities\", 0x0, \"selabel\", \"u:object_r:system_file:s0\");\n"
 contents += "unmount(\"/system\");\n"
+
+contents += "ui_print(\"#\");\n"
+contents += "ui_print(\"# Flash Loki patch, if necessary\");\n"
+contents += "ui_print(\"#\");\n"
+
 contents += "ui_print(\" \");\n"
 contents += "ui_print(\"Done!\");"
 with open(updater_script, "w") as f:
