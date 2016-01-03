@@ -153,8 +153,8 @@ today = datetime.date.today()
 # sign it
 testkey_x = "%s/build/target/product/security/testkey.x509.pem" % source
 testkey_p = "%s/build/target/product/security/testkey.pk8" % source
-call(['java', '-jar', signer, testkey_x, testkey_p, "%s.zip" % zip_dir, "%s-%s%s%s.zip" % (zip_dir, today.year, today.month, today.day)])
+call(['java', '-jar', signer, testkey_x, testkey_p, "%s.zip" % zip_dir, "%s-%s%02d%02d.zip" % (zip_dir, today.year, today.month, today.day)])
 remove("%s.zip" % zip_dir)
 #rmtree(zip_dir)
-print md5(open("%s-%s%s%s.zip" % (zip_dir, today.year, today.month, today.day), "rb").read()).hexdigest() + " %s-%s%s%s.zip" % (kernel_version, today.year, today.month, today.day)
-print "kernel saved to %s-%s%s%s.zip" % (zip_dir, today.year, today.month, today.day)
+print md5(open("%s-%s%02d%02d.zip" % (zip_dir, today.year, today.month, today.day), "rb").read()).hexdigest() + " %s-%s%02d%02d.zip" % (kernel_version, today.year, today.month, today.day)
+print "kernel saved to %s-%s%02d%02d.zip" % (zip_dir, today.year, today.month, today.day)
