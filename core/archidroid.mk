@@ -30,7 +30,7 @@ ARCHIDROID_GCC_CFLAGS_ARM := -O3
 ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 
 # Additional flags passed to all C targets compiled with GCC
-ARCHIDROID_GCC_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
+ARCHIDROID_GCC_CFLAGS := -std=gnu99 -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
 
 ############################
 ### EXPERIMENTAL SECTION ###
