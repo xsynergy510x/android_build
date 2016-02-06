@@ -30,9 +30,11 @@ ARCHIDROID_GCC_CFLAGS_ARM := -O3
 ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 
 # Additional flags passed to all C targets compiled with GCC
-ARCHIDROID_SHARED_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
+ARCHIDROID_GCC_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
 
-ARCHIDROID_GCC_CFLAGS := -std=gnu99 $(ARCHIDROID_SHARED_CFLAGS)
+# These two should have only default standards defined, really
+ARCHIDROID_COMMON_GLOBAL_CFLAGS := -std=gnu99
+ARCHIDROID_COMMON_GLOBAL_CPPFLAGS := -std=gnu++11
 
 ############################
 ### EXPERIMENTAL SECTION ###
@@ -43,24 +45,21 @@ ARCHIDROID_GCC_CFLAGS := -std=gnu99 $(ARCHIDROID_SHARED_CFLAGS)
 # Results with other toolchains may vary
 
 # These flags work fine in suggested compiler, but may cause ICEs in other compilers, comment if needed
-ARCHIDROID_SHARED_CFLAGS += -fgraphite -fgraphite-identity
+ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
 
 # The following flags (-floop) require that your GCC has been configured with --with-isl
 # Additionally, applying any of them will most likely cause ICE in your compiler, so they're disabled
-# ARCHIDROID_SHARED_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -floop-parallelize-all -floop-strip-mine
+# ARCHIDROID_GCC_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -floop-parallelize-all -floop-strip-mine
 
 # These flags have been disabled because of assembler errors
-# ARCHIDROID_SHARED_CFLAGS += -fmodulo-sched -fmodulo-sched-allow-regmoves
+# ARCHIDROID_GCC_CFLAGS += -fmodulo-sched -fmodulo-sched-allow-regmoves
 
 ####################
 ### MISC SECTION ###
 ####################
 
-# Flags passed to GCC compiler
-ARCHIDROID_GCC_CFLAGS := -std=gnu99 $(ARCHIDROID_SHARED_CFLAGS)
-
-# Flags passed to G++
-ARCHIDROID_GCC_CPPFLAGS := $(ARCHIDROID_SHARED_CFLAGS)
+# Flags passed to GCC preprocessor for C and C++
+ARCHIDROID_GCC_CPPFLAGS := $(ARCHIDROID_GCC_CFLAGS)
 
 # Flags passed to linker (ld) of all C and C++ targets compiled with GCC
 ARCHIDROID_GCC_LDFLAGS := -Wl,--sort-common

@@ -128,11 +128,14 @@ SHOW_COMMANDS:= $(filter showcommands,$(MAKECMDGOALS))
 # Set common values
 # ###############################################################
 
+# ArchiDroid
+include $(BUILD_SYSTEM)/archidroid.mk
+
 # These can be changed to modify both host and device modules.
-COMMON_GLOBAL_CFLAGS:= -DANDROID -fmessage-length=0 -W -Wall -Wno-unused -Winit-self -Wpointer-arith
+COMMON_GLOBAL_CFLAGS:= -DANDROID -fmessage-length=0 -W -Wall -Wno-unused -Winit-self -Wpointer-arith $(ARCHIDROID_COMMON_GLOBAL_CFLAGS)
 COMMON_RELEASE_CFLAGS:= -DNDEBUG -UDEBUG
 
-COMMON_GLOBAL_CPPFLAGS:= $(COMMON_GLOBAL_CFLAGS) -Wsign-promo -std=gnu++11
+COMMON_GLOBAL_CPPFLAGS:= $(COMMON_GLOBAL_CFLAGS) -Wsign-promo $(ARCHIDROID_COMMON_GLOBAL_CPPFLAGS)
 COMMON_RELEASE_CPPFLAGS:= $(COMMON_RELEASE_CFLAGS)
 
 # Force gcc to always output color diagnostics.  Ninja will strip the ANSI
