@@ -49,7 +49,7 @@ ARCHIDROID_GCC_LDFLAGS := -Wl,--relax -Wl,--sort-common
 # ARCHIDROID_GCC_CFLAGS += -ftracer -funroll-loops
 
 # These flags may cause ICEs in some compilers, but work fine in other ones, test carefully
-# ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
+ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
 
 # The following flags (-floop) require that your GCC has been configured --with-isl
 # Additionally, applying any of them will most likely cause ICE in your compiler, so they're disabled
@@ -114,7 +114,9 @@ ARCHIDROID_CLANG_UNKNOWN_FLAGS := \
 #####################
 
 # Most of the flags are increasing code size of the output binaries, especially O3 instead of Os for target THUMB
-# This may become problematic for small blocks, especially for boot or recovery blocks (ramdisks)
+# This may become problematic for small blocks, especially for boot or recovery blocks (ramdisks), used in older devices
+# For example, i9300 has only 8 MB block for recovery.img, and compiling TWRP for it with above optimizations will fail
+#
 # If you don't care about the size of recovery.img, e.g. you have no use of it, and you want to silence the
 # error "image too large" for recovery.img, use this definition
 #
@@ -122,5 +124,6 @@ ARCHIDROID_CLANG_UNKNOWN_FLAGS := \
 # boot + recovery combo (e.g. Sony Xperias), and we must build recovery for them, so we can't set TARGET_NO_RECOVERY globally
 # Therefore, this seems like a safe approach (will only ignore check on recovery.img, without doing anything else)
 # However, if you use compiled recovery.img for your device, please disable this flag (comment or set to false), and lower
-# optimization levels instead
+# optimization levels instead, as you need to make sure that recovery.img fits prior to trying to flash it
+# Most (if not all) of the builders have no use of recovery.img, therefore this option is enabled by default
 ARCHIDROID_IGNORE_RECOVERY_SIZE := true
