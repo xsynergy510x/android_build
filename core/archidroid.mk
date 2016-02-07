@@ -53,7 +53,7 @@ ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
 
 # The following flags (-floop) require that your GCC has been configured --with-isl
 # Additionally, applying any of them will most likely cause ICE in your compiler, so they're disabled
-ARCHIDROID_GCC_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -floop-parallelize-all -floop-strip-mine
+# ARCHIDROID_GCC_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -floop-parallelize-all -floop-strip-mine
 
 # These flags have been disabled because of assembler errors
 ARCHIDROID_GCC_CFLAGS += -fmodulo-sched -fmodulo-sched-allow-regmoves
