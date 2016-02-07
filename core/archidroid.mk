@@ -30,7 +30,10 @@ ARCHIDROID_GCC_CFLAGS_ARM := -O3
 ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 
 # Additional flags passed to all C targets compiled with GCC
-ARCHIDROID_GCC_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
+ARCHIDROID_GCC_CFLAGS := -O3 -flto=8 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
+
+# Flags passed to linker (ld) of all C and C++ targets
+ARCHIDROID_GCC_LDFLAGS := -Wl,-flto -Wl,--sort-common
 
 ############################
 ### EXPERIMENTAL SECTION ###
@@ -45,7 +48,7 @@ ARCHIDROID_GCC_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-fram
 
 # The following flags (-floop) require that your GCC has been configured with --with-isl
 # Additionally, applying any of them will most likely cause ICE in your compiler, so they're disabled
-ARCHIDROID_GCC_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -floop-parallelize-all -floop-strip-mine
+# ARCHIDROID_GCC_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -floop-parallelize-all -floop-strip-mine
 
 # These flags have been disabled because of assembler errors
 # ARCHIDROID_GCC_CFLAGS += -fmodulo-sched -fmodulo-sched-allow-regmoves
@@ -56,9 +59,6 @@ ARCHIDROID_GCC_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -f
 
 # Flags passed to GCC preprocessor for C and C++
 ARCHIDROID_GCC_CPPFLAGS := $(ARCHIDROID_GCC_CFLAGS)
-
-# Flags passed to linker (ld) of all C and C++ targets compiled with GCC
-ARCHIDROID_GCC_LDFLAGS := -Wl,--sort-common
 
 #####################
 ### CLANG SECTION ###
