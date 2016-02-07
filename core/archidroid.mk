@@ -65,7 +65,7 @@ ARCHIDROID_GCC_CPPFLAGS := $(ARCHIDROID_GCC_CFLAGS)
 #####################
 
 # Flags passed to all C targets compiled with CLANG
-ARCHIDROID_CLANG_CFLAGS := -O4 -Qunused-arguments -Wno-unknown-warning-option
+ARCHIDROID_CLANG_CFLAGS := -O3 -Qunused-arguments -Wno-unknown-warning-option
 
 # Flags passed to CLANG preprocessor for C and C++
 ARCHIDROID_CLANG_CPPFLAGS := $(ARCHIDROID_CLANG_CFLAGS)
