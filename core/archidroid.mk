@@ -30,7 +30,7 @@ ARCHIDROID_GCC_CFLAGS_ARM := -O3
 ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 
 # Additional flags passed to all C targets compiled with GCC
-ARCHIDROID_GCC_CFLAGS := -O3 -flto -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow -Wno-error=unused-variable
+ARCHIDROID_GCC_CFLAGS := -O3 -flto=8 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow -Wno-error=unused-variable
 
 # Flags passed to linker (ld) of all C and C++ targets
 ARCHIDROID_GCC_LDFLAGS := -Wl,-flto -Wl,--sort-common
@@ -65,13 +65,13 @@ ARCHIDROID_GCC_CPPFLAGS := $(ARCHIDROID_GCC_CFLAGS)
 #####################
 
 # Flags passed to all C targets compiled with CLANG
-ARCHIDROID_CLANG_CFLAGS := -O3 -Qunused-arguments -Wno-unknown-warning-option
+ARCHIDROID_CLANG_CFLAGS := -O4 -Qunused-arguments -Wno-unknown-warning-option
 
 # Flags passed to CLANG preprocessor for C and C++
 ARCHIDROID_CLANG_CPPFLAGS := $(ARCHIDROID_CLANG_CFLAGS)
 
 # Flags passed to linker (ld) of all C and C++ targets compiled with CLANG
-ARCHIDROID_CLANG_LDFLAGS := $(ARCHIDROID_GCC_LDFLAGS)
+ARCHIDROID_CLANG_LDFLAGS := -Wl,--sort-common
 
 # Flags that are used by GCC, but are unknown to CLANG. If you get "argument unused during compilation" error, add the flag here
 ARCHIDROID_CLANG_UNKNOWN_FLAGS := \
@@ -88,6 +88,7 @@ ARCHIDROID_CLANG_UNKNOWN_FLAGS := \
   -floop-interchange \
   -floop-nest-optimize \
   -floop-parallelize-all \
+  -flto=8 \
   -ftree-parallelize-loops=2 \
   -ftree-parallelize-loops=4 \
   -ftree-parallelize-loops=8 \
