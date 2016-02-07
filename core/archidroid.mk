@@ -30,10 +30,10 @@ ARCHIDROID_GCC_CFLAGS_ARM := -O3
 ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 
 # Additional flags passed to all C targets compiled with GCC
-ARCHIDROID_GCC_CFLAGS := -O3 -flto=8 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow -Wno-error=unused-variable
+ARCHIDROID_GCC_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftree-loop-im -ftree-loop-ivcanon -ftree-vectorize -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow -Wno-error=unused-variable
 
 # Flags passed to linker (ld) of all C and C++ targets
-ARCHIDROID_GCC_LDFLAGS := -Wl,-flto -Wl,--sort-common
+ARCHIDROID_GCC_LDFLAGS := -Wl,--relax -Wl,--sort-common
 
 ############################
 ### EXPERIMENTAL SECTION ###
@@ -42,11 +42,16 @@ ARCHIDROID_GCC_LDFLAGS := -Wl,-flto -Wl,--sort-common
 # Flags in this section are highly experimental
 # Current setup is based on proposed androideabi toolchain
 # Results with other toolchains may vary
+# Be careful when changing options in this section
 
-# These flags may cause ICEs in some compilers, but work fine in other ones, uncomment if needed
+# These flags should work in general, but it's likely that the generated code might be in fact slower than without them
+# I suggest to not enable them globally, but they're here for you in case you want to benchmark the OS with and without them
+# ARCHIDROID_GCC_CFLAGS += -ftracer -funroll-loops
+
+# These flags may cause ICEs in some compilers, but work fine in other ones, test carefully
 # ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
 
-# The following flags (-floop) require that your GCC has been configured with --with-isl
+# The following flags (-floop) require that your GCC has been configured --with-isl
 # Additionally, applying any of them will most likely cause ICE in your compiler, so they're disabled
 # ARCHIDROID_GCC_CFLAGS += -floop-block -floop-interchange -floop-nest-optimize -floop-parallelize-all -floop-strip-mine
 
@@ -71,7 +76,7 @@ ARCHIDROID_CLANG_CFLAGS := -O3 -Qunused-arguments -Wno-unknown-warning-option
 ARCHIDROID_CLANG_CPPFLAGS := $(ARCHIDROID_CLANG_CFLAGS)
 
 # Flags passed to linker (ld) of all C and C++ targets compiled with CLANG
-ARCHIDROID_CLANG_LDFLAGS := -Wl,--sort-common
+ARCHIDROID_CLANG_LDFLAGS := $(ARCHIDROID_GCC_LDFLAGS)
 
 # Flags that are used by GCC, but are unknown to CLANG. If you get "argument unused during compilation" error, add the flag here
 ARCHIDROID_CLANG_UNKNOWN_FLAGS := \
@@ -88,7 +93,6 @@ ARCHIDROID_CLANG_UNKNOWN_FLAGS := \
   -floop-interchange \
   -floop-nest-optimize \
   -floop-parallelize-all \
-  -flto=8 \
   -ftree-parallelize-loops=2 \
   -ftree-parallelize-loops=4 \
   -ftree-parallelize-loops=8 \
