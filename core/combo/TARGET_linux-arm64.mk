@@ -30,6 +30,10 @@
 # include defines, and compiler settings for the given architecture
 # version.
 #
+
+# ArchiDroid
+include $(BUILD_SYSTEM)/archidroid.mk
+
 ifeq ($(strip $(TARGET_ARCH_VARIANT)),)
 TARGET_ARCH_VARIANT := armv8
 endif
@@ -69,9 +73,6 @@ TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
 TARGET_GLOBAL_CFLAGS += \
     -fno-strict-aliasing \
-
-# ArchiDroid
-include $(BUILD_SYSTEM)/archidroid.mk
 
 android_config_h := $(call select-android-config-h,linux-arm64)
 
@@ -134,6 +135,7 @@ TARGET_RELEASE_CFLAGS := \
 			-frename-registers
 
 TARGET_GLOBAL_CFLAGS += $(ARCHIDROID_GCC_CFLAGS)
+TARGET_GLOBAL_CFLAGS += $(ARCHIDROID_GCC_CFLAGS_64)
 TARGET_GLOBAL_CPPFLAGS += $(ARCHIDROID_GCC_CPPFLAGS)
 TARGET_GLOBAL_LDFLAGS += $(ARCHIDROID_GCC_LDFLAGS)
 

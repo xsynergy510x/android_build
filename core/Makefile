@@ -1,5 +1,8 @@
 # Put some miscellaneous rules here
 
+# ArchiDroid
+include $(BUILD_SYSTEM)/archidroid.mk
+
 # Build system colors
 
 ifneq ($(BUILD_WITH_COLORS),0)
@@ -993,9 +996,6 @@ define build-recoveryramdisk
   $(hide) cat $(INSTALLED_DEFAULT_PROP_TARGET) $(recovery_build_prop) \
           > $(TARGET_RECOVERY_ROOT_OUT)/default.prop
 endef
-
-# ArchiDroid
-include $(BUILD_SYSTEM)/archidroid.mk
 
 RECOVERYIMAGE_ID_FILE := $(PRODUCT_OUT)/recovery.id
 # $(1): output file

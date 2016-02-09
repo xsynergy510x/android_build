@@ -17,6 +17,9 @@
 # Configuration for Linux on x86_64 as a target.
 # Included by combo/select.mk
 
+# ArchiDroid
+include $(BUILD_SYSTEM)/archidroid.mk
+
 # Provide a default variant.
 ifeq ($(strip $(TARGET_ARCH_VARIANT)),)
 TARGET_ARCH_VARIANT := x86_64
@@ -68,6 +71,11 @@ endif
 
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
+TARGET_GLOBAL_CFLAGS += $(ARCHIDROID_GCC_CFLAGS)
+TARGET_GLOBAL_CFLAGS += $(ARCHIDROID_GCC_CFLAGS_64)
+TARGET_GLOBAL_CPPFLAGS += $(ARCHIDROID_GCC_CPPFLAGS)
+TARGET_GLOBAL_LDFLAGS += $(ARCHIDROID_GCC_LDFLAGS)
+
 libc_root := bionic/libc
 libm_root := bionic/libm
 
@@ -76,7 +84,7 @@ KERNEL_HEADERS_ARCH   := $(libc_root)/kernel/uapi/asm-x86 # x86 covers both x86 
 KERNEL_HEADERS := $(KERNEL_HEADERS_COMMON) $(KERNEL_HEADERS_ARCH)
 
 TARGET_GLOBAL_CFLAGS += \
-			-O2 \
+			$(ARCHIDROID_GCC_CFLAGS_OPTI) \
 			-Wa,--noexecstack \
 			-Werror=format-security \
 			-D_FORTIFY_SOURCE=2 \
