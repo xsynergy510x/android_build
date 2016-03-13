@@ -33,10 +33,7 @@ ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 ARCHIDROID_GCC_CFLAGS := -O3 -pipe -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftree-loop-im -ftree-loop-ivcanon -ftree-vectorize -funsafe-loop-optimizations -funswitch-loops -fweb
 
 # We also need to define some warnings to not abort the build - they're not critical
-ARCHIDROID_GCC_CFLAGS += -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=parentheses -Wno-error=strict-overflow -Wno-error=unused-variable
-
-# Those flags are applied to 32bit targets only, e.g. to arm but not arm64
-ARCHIDROID_GCC_CFLAGS_32 := -Wno-error=bool-compare -Wno-error=logical-not-parentheses -Wno-error=sizeof-array-argument
+ARCHIDROID_GCC_CFLAGS += -Wno-error=array-bounds -Wno-error=bool-compare -Wno-error=clobbered -Wno-error=logical-not-parentheses -Wno-error=maybe-uninitialized -Wno-error=parentheses -Wno-error=sizeof-array-argument -Wno-error=strict-overflow -Wno-error=unused-variable
 
 # Flags passed to linker (ld) of all C and C++ targets
 ARCHIDROID_GCC_LDFLAGS := -Wl,-O3 -Wl,--relax -Wl,--sort-common
