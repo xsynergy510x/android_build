@@ -21,9 +21,6 @@
 #	combo_2nd_arch_prefix -- it's defined if this is loaded for the 2nd arch.
 #
 
-# ArchiDroid
-include $(BUILD_SYSTEM)/archidroid.mk
-
 # Build a target string like "linux-arm" or "darwin-x86".
 combo_os_arch := $($(combo_target)OS)-$($(combo_target)$(combo_2nd_arch_prefix)ARCH)
 
