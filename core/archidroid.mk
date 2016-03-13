@@ -30,10 +30,10 @@ ARCHIDROID_GCC_CFLAGS_ARM := -O3
 ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 
 # Additional flags passed to all C targets compiled with GCC
-ARCHIDROID_GCC_CFLAGS := -O3 -pipe -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftree-loop-im -ftree-loop-ivcanon -ftree-vectorize -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=parentheses -Wno-error=strict-overflow -Wno-error=unused-variable
+ARCHIDROID_GCC_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftree-loop-im -ftree-loop-ivcanon -ftree-vectorize -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=parentheses -Wno-error=strict-overflow -Wno-error=unused-variable
 
 # Flags passed to linker (ld) of all C and C++ targets
-ARCHIDROID_GCC_LDFLAGS := -Wl,-O3 -Wl,--relax -Wl,--sort-common
+ARCHIDROID_GCC_LDFLAGS := -Wl,--relax -Wl,--sort-common
 
 ############################
 ### EXPERIMENTAL SECTION ###
@@ -49,7 +49,7 @@ ARCHIDROID_GCC_LDFLAGS := -Wl,-O3 -Wl,--relax -Wl,--sort-common
 # ARCHIDROID_GCC_CFLAGS += -ftracer -funroll-loops
 
 # These flags may cause ICEs in some compilers, but work fine in other ones, test carefully
-# ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
+ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
 
 # The following flags (-floop) require that your GCC has been configured --with-isl
 # Additionally, applying any of them will most likely cause ICE in your compiler, so they're disabled
